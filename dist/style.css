@@ -13,3 +13,7 @@
     color: sandybrown;
     text-align: center;
 }
+
+.cardBody{
+    background-color: rgb(34, 44, 59);
+}
