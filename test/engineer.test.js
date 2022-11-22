@@ -1,13 +1,12 @@
 
-const Employee = require("../lib/employee");
-const Engineer = require("../lib/engineer")
+const Engineer = require("../lib/engineer");
 
 
-it("Test Employee github", () => {
+it("Test Engineer github", () => {
     const TestGithub = `TomFallara`    
     const TestEmployee = new Engineer("Nceba", 4, "test@gmail.com", TestGithub);
 
-    expect(TestEmployee.getGithub()).toEqual(TestGithub);
+    expect(TestEmployee.github).toEqual(TestGithub);
 });
 
 it("Test Engineer getGithub()", () => {
