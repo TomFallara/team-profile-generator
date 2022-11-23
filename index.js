@@ -1,44 +1,27 @@
 
-
 const Employee = require("./lib/employee");
 const Engineer = require("./lib/engineer");
 const Intern = require("./lib/intern");
 const Manager = require("./lib/manager");
+const htmlTemplate = require("./src/htmlTemplate")
 const inquirer = require('inquirer');
 const fs = require('fs');
+const createHtml = require("./src/htmlTemplate");
 
-function addEmployee() {
-    inquirer.prompt([{
-
-        type: 'list',
-        message: `What role does this employee fill?`,
-        name: 'role',
-        choices: [`Engineer`, `Intern`, `Manager`]
-    }])
-        .then(function (input) {
-            switch (input.role) {
-                case `Manager`: addManager();
-                    break;
-                case `Engineer`: addEngineer();
-                    break;
-                case `Intern`: addIntern();
-                    break;
-                default: printHtml();
-            }
-        })
-}
+const employeeArray = []
 
 function addManager() {
     inquirer
         .prompt([
             {
                 type: 'input',
-                message: `What is your employee's name?`,
+                message: `What is your Manager's name?`,
                 name: 'name',
             },
             {
                 type: 'input',
-                message: `What is their id?`,
+                message: `What is their id?
+Please type numerals only:`,
                 name: 'id',
             },
             {
@@ -48,18 +31,36 @@ function addManager() {
             },
             {
                 type: 'input',
-                message: 'What is their office number?',
+                message: 'What number is their office, using only numerals?',
                 name: 'officeNumber',
             },
         ])
         .then((data) => {
-            console.log(data);
-            const stuff = READMEOutput(data)
-            fs.writeFile("README.md", stuff, (err) => {
-                console.log(err); console.log(`README created!`)
-            });
+            const manager = new Manager(data.name, data.id, data.email, data.officeNumber);
+            employeeArray.push(manager);
+            addEmployee()
         })
 }
+
+function addEmployee() {
+    inquirer.prompt([{
+
+        type: 'list',
+        message: `What role does this employee fill?`,
+        name: 'role',
+        choices: [`Engineer`, `Intern`, `No more employees needed`]
+    }])
+        .then(function (input) {
+            switch (input.role) {
+                case `Engineer`: addEngineer();
+                    break;
+                case `Intern`: addIntern();
+                    break;
+                default: printHtml();
+            }
+        })
+}
+
 function addEngineer() {
     inquirer
         .prompt([
@@ -70,7 +71,8 @@ function addEngineer() {
             },
             {
                 type: 'input',
-                message: `What is their id?`,
+                message: `What is their id?
+Please type numerals only:`,
                 name: 'id',
             },
             {
@@ -85,11 +87,9 @@ function addEngineer() {
             },
         ])
         .then((data) => {
-            console.log(data);
-            const stuff = READMEOutput(data)
-            fs.writeFile("README.md", stuff, (err) => {
-                console.log(err); console.log(`README created!`)
-            });
+            const engineer = new Engineer(data.name, data.id, data.email, data.github);
+            employeeArray.push(engineer);
+            addEmployee()
         })
 }
 function addIntern() {
@@ -102,7 +102,8 @@ function addIntern() {
             },
             {
                 type: 'input',
-                message: `What is their id?`,
+                message: `What is their id?
+Please type numerals only:`,
                 name: 'id',
             },
             {
@@ -117,12 +118,17 @@ function addIntern() {
             },
         ])
         .then((data) => {
-            console.log(data);
-            const stuff = READMEOutput(data)
-            fs.writeFile("README.md", stuff, (err) => {
-                console.log(err); console.log(`README created!`)
-            });
+            const intern = new Intern(data.name, data.id, data.email, data.school);
+            employeeArray.push(intern);
+            addEmployee()
         })
 }
 
-addEmployee();
+    const printHtml = () => {
+        const template = createHtml(employeeArray)
+        fs.writeFile("./dist/index.html", template, (err) => {
+        console.log(err) ; console.log(`Team Member Board created!`)
+               })
+    }
+
+addManager();
